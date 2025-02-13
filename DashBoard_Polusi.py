@@ -78,8 +78,8 @@ with st.sidebar:
     - **Nama 4**  
     - **Nama 5**  
     """)
-    selected_year = st.selectbox("📅 Pilih Tahun", df["datetime"].dt.year.unique())
-    selected_month = st.selectbox("📆 Pilih Bulan", df["datetime"].dt.month.unique())
+    selected_year = st.selectbox("📅 Pilih Tahun", df["datetime"].dt.year.unique(), format_func=lambda x: f"{x}")
+    selected_month = st.selectbox("📆 Pilih Bulan", df["datetime"].dt.month.unique(), format_func=lambda x: f"Bulan {x}")
     pollutant = st.selectbox('☁️ Pilih Polutan untuk Visualisasi', pollutant_cols)
 
 # Filter data berdasarkan tahun dan bulan
