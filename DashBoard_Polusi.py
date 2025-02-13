@@ -52,6 +52,9 @@ df["season"] = df["datetime"].dt.month.apply(get_season)
 st.set_page_config(page_title="Dashboard Polusi Udara", layout="wide")
 st.markdown("""
 <style>
+    * {
+        font-family: 'Times New Roman', serif !important;
+    }
     .main {
         background-color: #f5f5f5;
     }
@@ -59,12 +62,11 @@ st.markdown("""
         background-color: #2c3e50;
         color: white;
     }
-    .stTitle, .stHeader {
+    .stTitle, .stHeader, .stSubheader {
         color: #2c3e50;
     }
-    label, .stSelectbox div, .stTextInput div, .stNumberInput div, h1, h2, h3, p {
-        color: black !important;
-        font-family: 'Times New Roman', serif !important;
+    label, .stSelectbox div, .stTextInput div, .stNumberInput div {
+        color: white !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -94,7 +96,7 @@ col1, col2 = st.columns([2, 1])
 
 with col1:
     st.subheader(f"📊 Tren {pollutant} Seiring Waktu")
-    st.write("Grafik ini menunjukkan tren perubahan kadar polutan dalam rentang waktu yang dipilih.")
+    st.markdown("Visualisasi ini menunjukkan tren konsentrasi polutan dalam satu bulan yang dipilih.")
     fig, ax = plt.subplots(figsize=(10, 5))
     sns.lineplot(data=filtered_df, x="datetime", y=pollutant, ax=ax, label=pollutant, color="red", alpha=0.7)
     plt.xlabel("Tahun")
@@ -104,14 +106,14 @@ with col1:
     st.pyplot(fig)
 
 st.subheader("🔍 Heatmap Korelasi")
-st.write("Heatmap ini menunjukkan hubungan korelasi antara berbagai polutan dan variabel cuaca.")
-fig, ax = plt.subplots(figsize=(10, 7))
+st.markdown("Heatmap ini menunjukkan hubungan antara berbagai polutan dan variabel cuaca.")
+fig, ax = plt.subplots(figsize=(8, 6))
 sns.heatmap(df[pollutant_cols + weather_cols].corr(), annot=True, cmap="coolwarm", fmt=".2f", center=0)
 st.pyplot(fig)
 
 # Peta interaktif
 st.subheader("🗺️ Peta Distribusi Polusi Udara")
-st.write("Peta ini menampilkan sebaran tingkat polusi berdasarkan data yang tersedia.")
+st.markdown("Peta ini menunjukkan distribusi polusi udara berdasarkan data sampel.")
 m = folium.Map(location=[39.9, 116.4], zoom_start=10)
 for i, row in df.sample(100).iterrows():
     folium.CircleMarker(
