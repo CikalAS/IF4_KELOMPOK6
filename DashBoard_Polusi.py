@@ -89,13 +89,13 @@ with st.sidebar:
 # Filter data berdasarkan tahun dan bulan
 filtered_df = df[(df["datetime"].dt.year == selected_year) & (df["datetime"].dt.month == selected_month)]
 
-# Layout menggunakan columns
-col1, col2 = st.columns([2, 1])
+# Layout menggunakan columns untuk membuat ukuran visualisasi seragam
+col1, col2, col3 = st.columns(3)
 
 with col1:
     st.subheader(f"📊 Tren {pollutant} Seiring Waktu")
     st.write("Grafik ini menunjukkan tren perubahan kadar polutan dalam rentang waktu yang dipilih.")
-    fig, ax = plt.subplots(figsize=(10, 5))
+    fig, ax = plt.subplots(figsize=(8, 6))
     sns.lineplot(data=filtered_df, x="datetime", y=pollutant, ax=ax, label=pollutant, color="red", alpha=0.7)
     plt.xlabel("Tahun")
     plt.ylabel(f"Konsentrasi {pollutant}")
@@ -103,26 +103,27 @@ with col1:
     plt.legend()
     st.pyplot(fig)
 
-st.subheader("🔍 Heatmap Korelasi")
-st.write("Heatmap ini menunjukkan hubungan korelasi antara berbagai polutan dan variabel cuaca.")
-fig, ax = plt.subplots(figsize=(10, 7))
-sns.heatmap(df[pollutant_cols + weather_cols].corr(), annot=True, cmap="coolwarm", fmt=".2f", center=0)
-st.pyplot(fig)
+with col2:
+    st.subheader("🔍 Heatmap Korelasi")
+    st.write("Heatmap ini menunjukkan hubungan korelasi antara berbagai polutan dan variabel cuaca.")
+    fig, ax = plt.subplots(figsize=(8, 6))
+    sns.heatmap(df[pollutant_cols + weather_cols].corr(), annot=True, cmap="coolwarm", fmt=".2f", center=0)
+    st.pyplot(fig)
 
-# Peta interaktif
-st.subheader("🗺️ Peta Distribusi Polusi Udara")
-st.write("Peta ini menampilkan sebaran tingkat polusi berdasarkan data yang tersedia.")
-m = folium.Map(location=[39.9, 116.4], zoom_start=10)
-for i, row in df.sample(100).iterrows():
-    folium.CircleMarker(
-        location=[39.9 + np.random.uniform(-0.05, 0.05), 116.4 + np.random.uniform(-0.05, 0.05)],
-        radius=row["PM2.5"] / 10,
-        color='red',
-        fill=True,
-        fill_color='red',
-        fill_opacity=0.6
-    ).add_to(m)
-folium_static(m)
+with col3:
+    st.subheader("🗺️ Peta Distribusi Polusi Udara")
+    st.write("Peta ini menampilkan sebaran tingkat polusi berdasarkan data yang tersedia.")
+    m = folium.Map(location=[39.9, 116.4], zoom_start=10)
+    for i, row in df.sample(100).iterrows():
+        folium.CircleMarker(
+            location=[39.9 + np.random.uniform(-0.05, 0.05), 116.4 + np.random.uniform(-0.05, 0.05)],
+            radius=row["PM2.5"] / 10,
+            color='red',
+            fill=True,
+            fill_color='red',
+            fill_opacity=0.6
+        ).add_to(m)
+    folium_static(m)
 
 # Dokumentasi dan kesimpulan
 st.markdown("""
