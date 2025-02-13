@@ -66,7 +66,7 @@ st.markdown("""
         color: #2c3e50;
     }
     label, .stSelectbox div, .stTextInput div, .stNumberInput div {
-        color: red !important;
+        color: grey !important;
     }
 </style>
 """, unsafe_allow_html=True)
