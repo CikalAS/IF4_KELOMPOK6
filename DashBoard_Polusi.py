@@ -52,13 +52,18 @@ df["season"] = df["datetime"].dt.month.apply(get_season)
 st.set_page_config(page_title="Dashboard Polusi Udara", layout="wide")
 st.markdown("""
 <style>
-    * {
-        font-family: 'Times New Roman', serif !important;
-    }
     .main {
         background-color: #f5f5f5;
     }
-    .stSidebar, .stTitle, .stHeader, .stText, .stMarkdown, label, .stSelectbox div, .stTextInput div, .stNumberInput div {
+    .stSidebar {
+        background-color: #2c3e50;
+        color: white;
+    }
+    .stTitle, .stHeader {
+        color: #2c3e50;
+    }
+    label, .stSelectbox div, .stTextInput div, .stNumberInput div {
+        color: white !important;
         font-family: 'Times New Roman', serif !important;
     }
 </style>
@@ -85,26 +90,26 @@ with st.sidebar:
 filtered_df = df[(df["datetime"].dt.year == selected_year) & (df["datetime"].dt.month == selected_month)]
 
 # Layout menggunakan columns
-col1, col2 = st.columns([2, 1])
+st.subheader(f"📊 Tren {pollutant} Seiring Waktu")
+st.write("Grafik berikut menampilkan tren perubahan kadar polutan yang dipilih berdasarkan waktu.")
+fig, ax = plt.subplots(figsize=(10, 5))
+sns.lineplot(data=filtered_df, x="datetime", y=pollutant, ax=ax, label=pollutant, color="red", alpha=0.7)
+plt.xlabel("Tahun")
+plt.ylabel(f"Konsentrasi {pollutant}")
+plt.title(f"Tren {pollutant} Seiring Waktu")
+plt.legend()
+st.pyplot(fig)
 
-with col1:
-    st.subheader(f"📊 Tren {pollutant} Seiring Waktu")
-    fig, ax = plt.subplots(figsize=(10, 5))
-    sns.lineplot(data=filtered_df, x="datetime", y=pollutant, ax=ax, label=pollutant, color="red", alpha=0.7)
-    plt.xlabel("Tahun")
-    plt.ylabel(f"Konsentrasi {pollutant}")
-    plt.title(f"Tren {pollutant} Seiring Waktu")
-    plt.legend()
-    st.pyplot(fig)
-
-with col2:
-    st.subheader("🔍 Heatmap Korelasi")
-    fig, ax = plt.subplots(figsize=(6, 5))
-    sns.heatmap(df[pollutant_cols + weather_cols].corr(), annot=True, cmap="coolwarm", fmt=".2f")
-    st.pyplot(fig)
+# Heatmap Korelasi
+st.subheader("🔍 Heatmap Korelasi")
+st.write("Heatmap berikut menunjukkan korelasi antara berbagai polutan dan variabel cuaca.")
+fig, ax = plt.subplots(figsize=(8, 6))
+sns.heatmap(df[pollutant_cols + weather_cols].corr(), annot=True, cmap="coolwarm", fmt=".2f", center=0)
+st.pyplot(fig)
 
 # Peta interaktif
 st.subheader("🗺️ Peta Distribusi Polusi Udara")
+st.write("Peta berikut menampilkan distribusi polutan berdasarkan sampel acak dari data yang tersedia.")
 m = folium.Map(location=[39.9, 116.4], zoom_start=10)
 for i, row in df.sample(100).iterrows():
     folium.CircleMarker(
@@ -120,10 +125,11 @@ folium_static(m)
 # Dokumentasi dan kesimpulan
 st.markdown("""
 ### 📌 Kesimpulan dari Analisis Data Polusi Udara
-✅ **Polusi Udara Cenderung Meningkat di Musim Dingin**
-✅ **Hujan Membantu Menurunkan Polusi**
-✅ **Clustering Menunjukkan Polusi Tinggi di Area Tertentu**
+✅ **Polusi Udara Cenderung Meningkat di Musim Dingin**  
+✅ **Hujan Membantu Menurunkan Polusi**  
+✅ **Clustering Menunjukkan Polusi Tinggi di Area Tertentu**  
 """)
 
 st.subheader("📋 Data Setelah Pembersihan")
+st.write("Data berikut merupakan hasil setelah proses pembersihan dan transformasi untuk analisis lebih lanjut.")
 st.dataframe(df.head())
