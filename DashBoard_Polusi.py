@@ -62,6 +62,10 @@ st.markdown("""
     .stTitle, .stHeader {
         color: #2c3e50;
     }
+    label, .stSelectbox div, .stTextInput div, .stNumberInput div {
+        color: white !important;
+        font-family: 'Times New Roman', serif !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
