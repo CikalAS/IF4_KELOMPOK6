@@ -50,32 +50,47 @@ df["season"] = df["datetime"].dt.month.apply(get_season)
 
 # Streamlit Dashboard
 st.set_page_config(page_title="Dashboard Polusi Udara", layout="wide")
-st.title('Dashboard Analisis Polusi Udara dan Cuaca')
+st.markdown("""
+<style>
+    .main {
+        background-color: #f5f5f5;
+    }
+    .stSidebar {
+        background-color: #2c3e50;
+        color: white;
+    }
+    .stTitle, .stHeader {
+        color: #2c3e50;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+st.title('🌍 Dashboard Analisis Polusi Udara dan Cuaca')
 
 # Sidebar untuk filter
 with st.sidebar:
-    st.header("Pengaturan Dashboard")
+    st.header("⚙️ Pengaturan Dashboard")
     st.markdown("""
-    **Anggota Kelompok 6:**  
-    - Nama 1  
-    - Nama 2  
-    - Nama 3  
-    - Nama 4  
-    - Nama 5  
+    **👥 Anggota Kelompok 6:**  
+    - **Nama 1**  
+    - **Nama 2**  
+    - **Nama 3**  
+    - **Nama 4**  
+    - **Nama 5**  
     """)
-    selected_year = st.selectbox("Pilih Tahun", df["datetime"].dt.year.unique())
-    selected_month = st.selectbox("Pilih Bulan", df["datetime"].dt.month.unique())
-    pollutant = st.selectbox('Pilih Polutan untuk Visualisasi', pollutant_cols)
+    selected_year = st.selectbox("📅 Pilih Tahun", df["datetime"].dt.year.unique())
+    selected_month = st.selectbox("📆 Pilih Bulan", df["datetime"].dt.month.unique())
+    pollutant = st.selectbox('☁️ Pilih Polutan untuk Visualisasi', pollutant_cols)
 
 # Filter data berdasarkan tahun dan bulan
 filtered_df = df[(df["datetime"].dt.year == selected_year) & (df["datetime"].dt.month == selected_month)]
 
 # Layout menggunakan columns
-col1, col2 = st.columns(2)
+col1, col2 = st.columns([2, 1])
 
 with col1:
-    st.subheader(f"Tren {pollutant} Seiring Waktu")
-    fig, ax = plt.subplots(figsize=(8, 4))
+    st.subheader(f"📊 Tren {pollutant} Seiring Waktu")
+    fig, ax = plt.subplots(figsize=(10, 5))
     sns.lineplot(data=filtered_df, x="datetime", y=pollutant, ax=ax, label=pollutant, color="red", alpha=0.7)
     plt.xlabel("Tahun")
     plt.ylabel(f"Konsentrasi {pollutant}")
@@ -84,13 +99,13 @@ with col1:
     st.pyplot(fig)
 
 with col2:
-    st.subheader("Heatmap Korelasi antara Cuaca dan Polusi")
-    fig, ax = plt.subplots(figsize=(8, 4))
+    st.subheader("🔍 Heatmap Korelasi")
+    fig, ax = plt.subplots(figsize=(6, 5))
     sns.heatmap(df[pollutant_cols + weather_cols].corr(), annot=True, cmap="coolwarm", fmt=".2f")
     st.pyplot(fig)
 
 # Peta interaktif
-st.subheader("Peta Distribusi Polusi Udara")
+st.subheader("🗺️ Peta Distribusi Polusi Udara")
 m = folium.Map(location=[39.9, 116.4], zoom_start=10)
 for i, row in df.sample(100).iterrows():
     folium.CircleMarker(
@@ -105,11 +120,11 @@ folium_static(m)
 
 # Dokumentasi dan kesimpulan
 st.markdown("""
-### Kesimpulan dari Analisis Data Polusi Udara 🏭
-1. **Polusi Udara Cenderung Meningkat di Musim Dingin**
-2. **Hujan Membantu Menurunkan Polusi**
-3. **Clustering Menunjukkan Polusi Tinggi di Area Tertentu**
+### 📌 Kesimpulan dari Analisis Data Polusi Udara
+✅ **Polusi Udara Cenderung Meningkat di Musim Dingin**
+✅ **Hujan Membantu Menurunkan Polusi**
+✅ **Clustering Menunjukkan Polusi Tinggi di Area Tertentu**
 """)
 
-st.subheader("Tampilkan Data Awal Setelah Pembersihan Data")
+st.subheader("📋 Data Setelah Pembersihan")
 st.dataframe(df.head())
