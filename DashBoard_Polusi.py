@@ -75,9 +75,9 @@ st.title('🌍 Dashboard Analisis Polusi Udara dan Cuaca')
 
 # Sidebar untuk filter
 with st.sidebar:
-    st.header("⚙️ **PENGATURAN DASHBOARD**")
+    st.header("⚙️ **PENGATURAN     DASHBOARD**")
     st.markdown("""
-    **👥 Anggota Kelompok 6:**  
+    **👥 ANGGOTA KELOMPOK 6:**  
     - **CIKAL AGUSTIAN (10123153)**  
     - **M.ABDUH (10123) 2**  
     - **DELIA (10123)**  
