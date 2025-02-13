@@ -51,19 +51,6 @@ scikit-learn (untuk teknik analisis lanjutan seperti clustering)
 🎥 Video Demo
 📺 YouTube Link (Tambahkan link setelah video dibuat!)
 
-Ini akan membuat README lebih profesional dan mudah dipahami. Silakan edit sesuai kebutuhan! 😊
-
-
-
-
-
-
-You said:
-kenapa kau tidak isi di bagian deployment nya?
-ChatGPT said:
-Aku belum mengisi bagian Deployment karena aku belum tahu apakah dashboard kalian sudah dideploy ke Streamlit Cloud atau platform lain. Jika sudah, kalian bisa mengganti bagian ini dengan link URL dari dashboard yang sudah online.
-
-Kalau belum dideploy, kalian bisa mengikuti langkah berikut untuk deploy ke Streamlit Cloud:
 
 🚀 Cara Deploy ke Streamlit Cloud
 Pastikan repository GitHub sudah lengkap dengan file .py, dataset, dan requirements.txt.
