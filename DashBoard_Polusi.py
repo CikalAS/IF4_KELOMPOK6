@@ -2,8 +2,11 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import streamlit as st
+import folium
+from streamlit_folium import folium_static
 from scipy.stats.mstats import winsorize
 from sklearn.cluster import KMeans
+import numpy as np
 
 # Load dataset
 file_path = "PRSA_Data_Guanyuan_20130301-20170228.csv"
@@ -27,6 +30,23 @@ df.drop(columns=["year", "month", "day", "hour"], inplace=True)
 # Winsorizing untuk outlier
 df[pollutant_cols] = df[pollutant_cols].apply(lambda x: winsorize(x, limits=[0.01, 0.01]))
 df[weather_cols] = df[weather_cols].apply(lambda x: winsorize(x, limits=[0.01, 0.01]))
+
+# Feature Engineering: Rata-rata polusi harian
+df["date"] = df["datetime"].dt.date
+daily_avg = df.groupby("date")[pollutant_cols].mean().reset_index()
+
+# Feature Engineering: Polusi per Musim
+def get_season(month):
+    if month in [12, 1, 2]:
+        return "Winter"
+    elif month in [3, 4, 5]:
+        return "Spring"
+    elif month in [6, 7, 8]:
+        return "Summer"
+    else:
+        return "Autumn"
+
+df["season"] = df["datetime"].dt.month.apply(get_season)
 
 # Streamlit Dashboard
 st.title('Dashboard Analisis Polusi Udara dan Cuaca')
@@ -71,13 +91,25 @@ fig, ax = plt.subplots()
 sns.scatterplot(data=df, x="PM2.5", y="NO2", hue="Cluster", palette="viridis", alpha=0.6)
 st.pyplot(fig)
 
-# Visualisasi Tren PM2.5 dengan Moving Average
-st.subheader("Tren PM2.5 dengan Moving Average 7 Hari")
-df["PM2.5_MA7"] = df["PM2.5"].rolling(window=7).mean()
-fig, ax = plt.subplots(figsize=(15, 6))
-sns.lineplot(data=df, x="datetime", y="PM2.5", label="PM2.5", color="red", alpha=0.7)
-sns.lineplot(data=df, x="datetime", y="PM2.5_MA7", label="Moving Average (7 hari)", color="blue")
+# Heatmap Korelasi
+st.subheader("Heatmap Korelasi antara Variabel Cuaca dan Polusi")
+fig, ax = plt.subplots(figsize=(10, 6))
+sns.heatmap(df[pollutant_cols + weather_cols].corr(), annot=True, cmap="coolwarm", fmt=".2f")
 st.pyplot(fig)
+
+# Geoanalysis dengan Folium (Simulasi Lokasi)
+st.subheader("Peta Distribusi Polusi Udara")
+m = folium.Map(location=[39.9, 116.4], zoom_start=10)
+for i, row in df.sample(100).iterrows():
+    folium.CircleMarker(
+        location=[39.9 + np.random.uniform(-0.05, 0.05), 116.4 + np.random.uniform(-0.05, 0.05)],
+        radius=row["PM2.5"] / 10,
+        color='red',
+        fill=True,
+        fill_color='red',
+        fill_opacity=0.6
+    ).add_to(m)
+folium_static(m)
 
 # Dokumentasi
 st.markdown("""
