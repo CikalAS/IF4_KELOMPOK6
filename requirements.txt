@@ -3,6 +3,4 @@ pandas
 numpy
 seaborn
 matplotlib
-scipy
-scikit-learn
-plotly
+scipy==1.9.3
