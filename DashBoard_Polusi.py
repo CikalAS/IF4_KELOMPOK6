@@ -49,55 +49,39 @@ def get_season(month):
 df["season"] = df["datetime"].dt.month.apply(get_season)
 
 # Streamlit Dashboard
+st.set_page_config(page_title="Dashboard Polusi Udara", layout="wide")
 st.title('Dashboard Analisis Polusi Udara dan Cuaca')
 
-st.markdown("""
-    Ini adalah dashboard interaktif untuk menganalisis tren polusi udara dan cuaca di Guanyuan dari 2013 hingga 2017.
-    Anda dapat melihat visualisasi polusi udara dan faktor cuaca yang mempengaruhi kualitas udara.
-""")
+# Sidebar untuk filter
+with st.sidebar:
+    st.header("Pengaturan Dashboard")
+    selected_year = st.selectbox("Pilih Tahun", df["datetime"].dt.year.unique())
+    selected_month = st.selectbox("Pilih Bulan", df["datetime"].dt.month.unique())
+    pollutant = st.selectbox('Pilih Polutan untuk Visualisasi', pollutant_cols)
 
-# Filter Data Berdasarkan Tahun & Bulan
-selected_year = st.selectbox("Pilih Tahun", df["datetime"].dt.year.unique())
-selected_month = st.selectbox("Pilih Bulan", df["datetime"].dt.month.unique())
+# Filter data berdasarkan tahun dan bulan
 filtered_df = df[(df["datetime"].dt.year == selected_year) & (df["datetime"].dt.month == selected_month)]
 
-# Pilih Polutan untuk Visualisasi
-pollutant = st.selectbox('Pilih Polutan untuk Visualisasi', pollutant_cols)
+# Layout menggunakan columns
+col1, col2 = st.columns(2)
 
-# Visualisasi Tren Polusi Udara
-st.subheader(f"Tren {pollutant} Seiring Waktu")
-fig, ax = plt.subplots(figsize=(15, 6))
-sns.lineplot(data=filtered_df, x="datetime", y=pollutant, ax=ax, label=pollutant, color="red", alpha=0.7)
-plt.xlabel("Tahun")
-plt.ylabel(f"Konsentrasi {pollutant}")
-plt.title(f"Tren {pollutant} Seiring Waktu")
-plt.legend()
-st.pyplot(fig)
+with col1:
+    st.subheader(f"Tren {pollutant} Seiring Waktu")
+    fig, ax = plt.subplots(figsize=(8, 4))
+    sns.lineplot(data=filtered_df, x="datetime", y=pollutant, ax=ax, label=pollutant, color="red", alpha=0.7)
+    plt.xlabel("Tahun")
+    plt.ylabel(f"Konsentrasi {pollutant}")
+    plt.title(f"Tren {pollutant} Seiring Waktu")
+    plt.legend()
+    st.pyplot(fig)
 
-# Boxplot untuk Deteksi Outlier
-st.subheader("Boxplot untuk Pendeteksian Outlier")
-fig, ax = plt.subplots(figsize=(12, 6))
-sns.boxplot(data=df[pollutant_cols + weather_cols], ax=ax)
-plt.xticks(rotation=45)
-st.pyplot(fig)
+with col2:
+    st.subheader("Heatmap Korelasi antara Cuaca dan Polusi")
+    fig, ax = plt.subplots(figsize=(8, 4))
+    sns.heatmap(df[pollutant_cols + weather_cols].corr(), annot=True, cmap="coolwarm", fmt=".2f")
+    st.pyplot(fig)
 
-# Clustering K-Means
-st.subheader("Clustering Polusi Udara")
-X = df[pollutant_cols]
-kmeans = KMeans(n_clusters=3, random_state=42)
-df["Cluster"] = kmeans.fit_predict(X)
-
-fig, ax = plt.subplots()
-sns.scatterplot(data=df, x="PM2.5", y="NO2", hue="Cluster", palette="viridis", alpha=0.6)
-st.pyplot(fig)
-
-# Heatmap Korelasi
-st.subheader("Heatmap Korelasi antara Variabel Cuaca dan Polusi")
-fig, ax = plt.subplots(figsize=(10, 6))
-sns.heatmap(df[pollutant_cols + weather_cols].corr(), annot=True, cmap="coolwarm", fmt=".2f")
-st.pyplot(fig)
-
-# Geoanalysis dengan Folium (Simulasi Lokasi)
+# Peta interaktif
 st.subheader("Peta Distribusi Polusi Udara")
 m = folium.Map(location=[39.9, 116.4], zoom_start=10)
 for i, row in df.sample(100).iterrows():
@@ -111,20 +95,12 @@ for i, row in df.sample(100).iterrows():
     ).add_to(m)
 folium_static(m)
 
-# Dokumentasi
+# Dokumentasi dan kesimpulan
 st.markdown("""
 ### Kesimpulan dari Analisis Data Polusi Udara 🏭
-1. **Tren Polusi Udara:**
-   - Konsentrasi PM2.5 meningkat di musim dingin (November - Februari).
-   - NO2 dan CO juga meningkat di musim dingin, kemungkinan akibat pemanas ruangan.
-
-2. **Hubungan Cuaca & Polusi:**
-   - Hujan cenderung menurunkan polusi karena partikel udara larut dalam air hujan.
-   - Tekanan udara yang lebih tinggi berkorelasi dengan tingginya konsentrasi polutan.
-
-3. **Pola Berdasarkan Clustering:**
-   - K-Means mengelompokkan level polusi menjadi **Rendah, Sedang, dan Tinggi**.
-   - Lokasi dengan polusi tinggi sering ditemukan di area industri & lalu lintas padat.
+1. **Polusi Udara Cenderung Meningkat di Musim Dingin**
+2. **Hujan Membantu Menurunkan Polusi**
+3. **Clustering Menunjukkan Polusi Tinggi di Area Tertentu**
 """)
 
 st.subheader("Tampilkan Data Awal Setelah Pembersihan Data")
