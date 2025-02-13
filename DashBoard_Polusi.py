@@ -52,18 +52,13 @@ df["season"] = df["datetime"].dt.month.apply(get_season)
 st.set_page_config(page_title="Dashboard Polusi Udara", layout="wide")
 st.markdown("""
 <style>
+    * {
+        font-family: 'Times New Roman', serif !important;
+    }
     .main {
         background-color: #f5f5f5;
     }
-    .stSidebar {
-        background-color: #2c3e50;
-        color: white;
-    }
-    .stTitle, .stHeader {
-        color: #2c3e50;
-    }
-    label, .stSelectbox div, .stTextInput div, .stNumberInput div {
-        color: white !important;
+    .stSidebar, .stTitle, .stHeader, .stText, .stMarkdown, label, .stSelectbox div, .stTextInput div, .stNumberInput div {
         font-family: 'Times New Roman', serif !important;
     }
 </style>
