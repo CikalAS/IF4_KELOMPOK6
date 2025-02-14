@@ -112,15 +112,13 @@ Klik 'Deploy' dan tunggu hingga aplikasi siap digunakan.
 
 ✨ Anggota Kelompok
 
-Nama 1
+Nama : Cikal Agustian S (10123153)
 
-Nama 2
+Nama : M. Abduh (10123148)
 
-Nama 3
+Nama : Delia Aksani (10123156)
 
-Nama 4
-
-Nama 5
+Nama : Rainhard Frealdo S (10123169)
 
 © 2025 Dashboard Analisis Polusi Udara
 
