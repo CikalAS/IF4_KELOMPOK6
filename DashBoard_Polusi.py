@@ -77,11 +77,8 @@ st.title('🌍 Dashboard Analisis Polusi Udara dan Cuaca')
 with st.sidebar:
     st.header("⚙️ Pengaturan Dashboard")
     st.markdown("""
-    **👥 Anggota Kelompok 6:**  
-    - **CIKAL AGUSTIAN S (10123153)**  
-    - **M. ABDUH (10123148)**  
-    - **DELIA AKSANI P (10123156)**  
-    - **RAINHARD FREALDO S (10123169)**  
+    ** Anggota:**  
+    - **CIKAL AGUSTIAN S (10123153)**    
     """)
     selected_year = st.selectbox("📅 Pilih Tahun", df["datetime"].dt.year.unique(), format_func=lambda x: f"{x}")
     selected_month = st.selectbox("📆 Pilih Bulan", df["datetime"].dt.month.unique(), format_func=lambda x: f"Bulan {x}")
